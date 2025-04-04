@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: vnstock-auto
-    env: python
-    plan: free
-    buildCommand: ""
-    startCommand: "python get_stock_data.py"

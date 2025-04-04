@@ -1,32 +1,31 @@
-from flask import Flask
 from vnstock import get_intraday_data
 import requests
 from datetime import datetime
 import pytz
 
-app = Flask(__name__)
+# Lấy ngày hôm nay theo múi giờ Việt Nam
+today = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%Y-%m-%d')
 
-@app.route("/")
-def run():
-    today = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%Y-%m-%d')
-    symbols = ["HPG", "FPT", "VNM", "MWG", "FUEVFVND"]
-    data = {}
+# Danh sách mã cổ phiếu cần lấy
+symbols = ["HPG", "FPT", "VNM", "MWG", "FUEVFVND"]
 
-    for symbol in symbols:
-        try:
-            df = get_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
-            if not df.empty:
-                latest = df.iloc[-1]
-                data[symbol] = {
-                    "price": latest["close"],
-                    "time": latest["time"]
-                }
-        except Exception as e:
-            data[symbol] = {"error": str(e)}
+# Dữ liệu kết quả
+data = {}
 
-    webhook_url = "https://hook.us2.make.com/msge7hk1g1sg2o5fc1ctrz9gyfsj42ir"
-    response = requests.post(webhook_url, json=data)
-    return f"Sent to webhook: {response.status_code}"
+# Lấy giá gần nhất trong hôm nay
+for symbol in symbols:
+    try:
+        df = get_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
+        if not df.empty:
+            latest = df.iloc[-1]
+            data[symbol] = {
+                "price": latest["close"],
+                "time": latest["time"]
+            }
+    except Exception as e:
+        data[symbol] = {"error": str(e)}
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+# Gửi kết quả về webhook của Make
+webhook_url = "https://hook.us2.make.com/msge7hk1g1sg2o5fc1ctrz9gyfsj42ir"
+response = requests.post(webhook_url, json=data)
+print(response.status_code, response.text)

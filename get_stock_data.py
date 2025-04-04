@@ -1,5 +1,5 @@
 from flask import Flask
-from vnstock import get_intraday_data
+from vnstock import stock_intraday_data
 import requests
 from datetime import datetime
 import pytz

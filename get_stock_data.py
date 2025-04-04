@@ -1,5 +1,5 @@
 from flask import Flask
-from vnstock import stock_intraday_data
+from vnstock import get_intraday_data
 import requests
 from datetime import datetime
 import pytz
@@ -14,7 +14,7 @@ def run():
 
     for symbol in symbols:
         try:
-            df = stock_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
+            df = get_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
             if not df.empty:
                 latest = df.iloc[-1]
                 data[symbol] = {

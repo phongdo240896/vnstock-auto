@@ -12,7 +12,7 @@ symbols = ["HPG", "FPT", "VNM", "MWG", "FUEVFVND"]
 # Dữ liệu kết quả
 data = {}
 
-# Lấy giá gần nhất trong hôm nay
+# Lấy giá gần nhất
 for symbol in symbols:
     try:
         df = get_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
@@ -25,7 +25,7 @@ for symbol in symbols:
     except Exception as e:
         data[symbol] = {"error": str(e)}
 
-# Gửi kết quả về webhook của Make
+# Gửi về Make
 webhook_url = "https://hook.us2.make.com/msge7hk1g1sg2o5fc1ctrz9gyfsj42ir"
 response = requests.post(webhook_url, json=data)
 print(response.status_code, response.text)

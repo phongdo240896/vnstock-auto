@@ -14,7 +14,7 @@ def run():
 
     for symbol in symbols:
         try:
-            df = get_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
+            df = stock_intraday_data(symbol, start_date=today, end_date=today, resolution=1)
             if not df.empty:
                 latest = df.iloc[-1]
                 data[symbol] = {

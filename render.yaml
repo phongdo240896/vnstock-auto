@@ -1,1 +1,8 @@
-
+services:
+  - type: web
+    name: vnstock-api
+    env: python
+    plan: free
+    buildCommand: ""
+    startCommand: "python get_stock_data.py"
+    envVars: []

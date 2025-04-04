@@ -1,18 +1,25 @@
-from vnstock import stock_historical_data
+from vnstock import get_price_data
 import requests
-import datetime
+from datetime import datetime
+import json
 
-# Cấu hình
-symbol = "HPG"
-today = datetime.datetime.today().strftime("%Y-%m-%d")
-yesterday = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+# Tạo ngày hôm nay dạng yyyy-mm-dd
+today = datetime.now().strftime('%Y-%m-%d')
 
-# Lấy giá
-data = stock_historical_data(symbol, start_date=yesterday, end_date=today, resolution='1D')
-last_price = data.iloc[-1].to_dict()
-
-# Gửi về Make (Thay webhook của anh vào dòng dưới)
-requests.post(
-    "https://hook.us2.make.com/msge7hk1g1sg2o5fc1ctrz9gyfsj42ir",
-    json={"symbol": symbol, "price": last_price}
+# Gọi API lấy dữ liệu giá ngày hôm nay cho mã HPG
+data = get_price_data(
+    symbol='HPG',
+    resolution='1D',
+    start_date=today,
+    end_date=today
 )
+
+# Địa chỉ webhook Make.com của anh
+webhook_url = "https://hook.us2.make.com/msge7hk1g1sg2o5fc1ctrz9gyfsj42ir"
+
+# Gửi dữ liệu JSON về Make
+response = requests.post(webhook_url, json={"symbol": "HPG", "date": today, "data": data})
+
+# In trạng thái phản hồi từ webhook (debug)
+print("Status:", response.status_code)
+print("Response:", response.text)

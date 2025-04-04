@@ -2,3 +2,4 @@ vnstock
 requests
 pandas
 pytz
+flask

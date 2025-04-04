@@ -1,0 +1,4 @@
+flask
+vnstock
+pytz
+requests
